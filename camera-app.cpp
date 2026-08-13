@@ -565,14 +565,7 @@ int main() {
             size_t offsetInPage = plane.offset - pageOffset;
             size_t mapLength = plane.length + offsetInPage;
 
-            void *memory = mmap(
-                nullptr,
-                mapLength,
-                PROT_READ,
-                MAP_SHARED,
-                plane.fd.get(),
-                pageOffset
-            );
+            void *memory = mmap(nullptr, mapLength, PROT_READ, MAP_SHARED, plane.fd.get(), pageOffset);
 
             if (memory == MAP_FAILED) {
                 perror("mmap");
@@ -659,26 +652,11 @@ int main() {
                 app.recorder.encodeFrame(y, u, v);
             }
 
-            yuv420_to_rgb(
-                y,
-                u,
-                v,
-                app.rgb.data(),
-                640,
-                480
-            );
+            yuv420_to_rgb(y, u, v, app.rgb.data(), 640, 480);
 
             std::memcpy(image->data, app.rgb.data(), app.rgb.size());
 
-            XPutImage(
-                display,
-                pixmap[currentPixmap],
-                gc,
-                image,
-                0, 0,
-                0, 0,
-                640, 480
-            );
+            XPutImage(display, pixmap[currentPixmap], gc, image, 0, 0, 0, 0, 640, 480);
 
             if (app.recorder.recording) {
               auto now = std::chrono::steady_clock::now();
@@ -695,23 +673,7 @@ int main() {
               }
             }
 
-            XPresentPixmap(
-                display,
-                window,
-                pixmap[currentPixmap],
-                0,
-                None,
-                None,
-                0, 0,
-                None,
-                None,
-                None,
-                0, 0,
-                0, 0,
-                nullptr,
-                0
-            );
-
+            XPresentPixmap(display, window, pixmap[currentPixmap], 0, None, None, 0, 0, None, None, None, 0, 0, 0, 0, nullptr, 0);
             XFlush(display);
 
             currentPixmap ^= 1;
