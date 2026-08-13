@@ -194,25 +194,12 @@ public:
             return;
 
         for (int row = 0; row < 480; row++) {
-            std::memcpy(
-                frame->data[0] + row * frame->linesize[0],
-                y + row * 640,
-                640
-            );
+            std::memcpy(frame->data[0] + row * frame->linesize[0], y + row * 640, 640);
         }
 
         for (int row = 0; row < 240; row++) {
-            std::memcpy(
-                frame->data[1] + row * frame->linesize[1],
-                u + row * 320,
-                320
-            );
-
-            std::memcpy(
-                frame->data[2] + row * frame->linesize[2],
-                v + row * 320,
-                320
-            );
+            std::memcpy(frame->data[1] + row * frame->linesize[1], u + row * 320, 320);
+            std::memcpy(frame->data[2] + row * frame->linesize[2], v + row * 320, 320);
         }
 
         auto now = std::chrono::steady_clock::now();
@@ -224,19 +211,9 @@ public:
             return;
 
         while (avcodec_receive_packet(codecContext, packet) == 0) {
-            av_packet_rescale_ts(
-                packet,
-                codecContext->time_base,
-                videoStream->time_base
-            );
-
+            av_packet_rescale_ts(packet, codecContext->time_base, videoStream->time_base);
             packet->stream_index = videoStream->index;
-
-            av_interleaved_write_frame(
-                formatContext,
-                packet
-            );
-
+            av_interleaved_write_frame(formatContext, packet);
             av_packet_unref(packet);
         }
     }
@@ -255,12 +232,7 @@ public:
             );
 
             packet->stream_index = videoStream->index;
-
-            av_interleaved_write_frame(
-                formatContext,
-                packet
-            );
-
+            av_interleaved_write_frame(formatContext, packet);
             av_packet_unref(packet);
         }
 
