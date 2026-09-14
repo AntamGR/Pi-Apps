@@ -129,7 +129,7 @@ public:
         codecContext->pix_fmt = AV_PIX_FMT_YUV420P;
         codecContext->time_base = AVRational{1, 30};
         codecContext->framerate = AVRational{30, 1};
-        codecContext->bit_rate = 4000000;
+        codecContext->bit_rate = 3200000;
         codecContext->gop_size = 30;
         codecContext->max_b_frames = 0;
 
@@ -456,10 +456,20 @@ int main() {
     window = XCreateSimpleWindow(
         display,
         RootWindow(display, screen),
-        100, 100, 640, 480, 1,
+        160, 0, 640, 480, 1,
         BlackPixel(display, screen),
         BlackPixel(display, screen)
     );
+
+    Atom wmState = XInternAtom(display, "_MOTIF_WM_HINTS", False);
+    struct {
+      unsigned long flags;
+      unsigned long functions;
+      unsigned long decorations;
+      long inputMode;
+      unsigned long status;
+    } hints = {2, 0, 0, 0, 0};
+    XChangeProperty(display, window, wmState, wmState, 32, PropModeReplace, (unsigned char *)&hints, 5);
 
     XStoreName(display, window, "Pi Camera");
     XSelectInput(display, window, ExposureMask | KeyPressMask | StructureNotifyMask );
